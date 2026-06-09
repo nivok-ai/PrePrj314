@@ -1,8 +1,8 @@
-package ru.kata.spring.boot_security.demo.repository;
+package rest.repository;
 
-import ru.kata.spring.boot_security.demo.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import rest.model.Role;
 
 import java.util.Optional;
 

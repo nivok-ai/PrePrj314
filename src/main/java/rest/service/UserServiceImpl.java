@@ -1,11 +1,10 @@
-package ru.kata.spring.boot_security.demo.service;
+package rest.service;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.dao.UserDao;
+import rest.model.User;
+import rest.repository.UserRepository;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -13,32 +12,31 @@ import java.util.List;
 @Service
 @Transactional
 public class UserServiceImpl implements UserService {
-    private final UserDao userDao;
+    private final UserRepository userRepository;
 
     @Autowired
-    public UserServiceImpl(UserDao userDao) {
-        this.userDao = userDao;
+    public UserServiceImpl(UserRepository userDao) {
+        this.userRepository = userDao;
     }
 
     public void saveUser(User user) {
-        userDao.saveUser(user);
+        userRepository.save(user);
     }
 
     public User getUserById(long id) {
-        return userDao.getUserById(id);
+        return userRepository.getById(id);
     }
 
     public void updateUser(User userUpdated) {
-        userDao.updateUser(userUpdated);
+        userRepository.save(userUpdated);
     }
 
     public void removeUserById(long id) {
-        userDao.removeUserById(id);
+        userRepository.deleteById(id);
     }
 
     public List<User> getAllUsers() {
-        return userDao.getAllUsers();
+        return userRepository.findAll();
     }
 
 }
-
