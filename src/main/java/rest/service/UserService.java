@@ -6,11 +6,9 @@ import rest.model.User;
 import java.util.List;
 
 public interface UserService {
-    void saveUser(User user);
+    void saveUser(User user, String password);
 
     User getUserById(long id);
-
-    void updateUser(User userUpdated);
 
     void removeUserById(long id);
 

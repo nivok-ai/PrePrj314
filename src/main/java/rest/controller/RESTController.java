@@ -1,7 +1,6 @@
 package rest.controller;
 
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,14 +15,15 @@ import java.util.*;
 @RequestMapping("/api")
 public class RESTController {
 
-    @Autowired
     private UserService userService;
 
-    @Autowired
     private RoleService roleService;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    public RESTController(UserService userService, RoleService roleService) {
+        this.userService = userService;
+        this.roleService = roleService;
+    }
 
     @GetMapping("/current-user")
     public Map<String, Object> getCurrentUser(Authentication authentication) {
@@ -34,7 +34,7 @@ public class RESTController {
         response.put("username", user.getUsername());
         response.put("age", user.getAge());
 
-        // Для обратной совместимости с вашим JS
+        // Для обратной совместимости с JS
         List<Map<String, String>> authorities = new ArrayList<>();
         List<Map<String, String>> roles = new ArrayList<>();
 
@@ -84,8 +84,6 @@ public class RESTController {
         User user = new User();
         user.setUsername(username);
         user.setAge(age);
-        user.setPassword(passwordEncoder.encode(password));
-
         Set<Role> roles = new HashSet<>();
         if (roleIds != null) {
             for (Long roleId : roleIds) {
@@ -93,7 +91,7 @@ public class RESTController {
             }
         }
         user.setRoles(roles);
-        userService.saveUser(user);
+        userService.saveUser(user, password);
     }
 
     @PutMapping("/users/{id}")
@@ -106,10 +104,6 @@ public class RESTController {
         User user = userService.getUserById(id);
         user.setUsername(username);
         user.setAge(age);
-        if (password != null && !password.isEmpty()) {
-            user.setPassword(passwordEncoder.encode(password));
-        }
-
         Set<Role> roles = new HashSet<>();
         if (roleIds != null) {
             for (Long roleId : roleIds) {
@@ -117,7 +111,7 @@ public class RESTController {
             }
         }
         user.setRoles(roles);
-        userService.saveUser(user);
+        userService.saveUser(user, password);
     }
 
     @DeleteMapping("/users/{id}")
